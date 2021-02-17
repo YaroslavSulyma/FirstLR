@@ -1,4 +1,4 @@
-const Gomoku = require('gomoku-js');
+/*const Gomoku = require('gomoku-js');
 
 let game = new Gomoku(5);
 
@@ -20,8 +20,27 @@ game.setChessOf(1, 1, 3);
 
 game.setChessOf(0, 4, 0);
 
-game.setChessOf(1, 1, 4);
+game.setChessOf(1, 1, 4);*/
 
-//  ...
-//
-//  It will return the index of winner
+let blessed = require('blessed')
+    , contrib = require('blessed-contrib')
+
+let screen = blessed.screen()
+
+let size = 5
+
+let grid = new contrib.grid({rows: size, cols: size, screen: screen})
+
+for (let i = 0; i < size; i++) {
+    for (let j = 0; j < size; j++) {
+        grid.set(i, j, 4, 4, blessed.box, {content: 'My Box',
+        bold:'bold'},)
+    }
+}
+
+
+screen.key(['escape', 'q', 'C-c'], function (ch, key) {
+    return process.exit(0);
+});
+
+screen.render()
