@@ -1,27 +1,58 @@
-const Gomoku = require('gomoku-js');
+const blessed = require('blessed')
+    , contrib = require('blessed-contrib')
+    , program = blessed.program()
+    , screen = blessed.screen()
 
-let game = new Gomoku(5);
+const Gomoku = require('gomoku-js')
 
-game.setChessOf(0, 0, 0);
+let size = 5
 
-game.setChessOf(1, 0, 1);
+let game = new Gomoku(size)
 
-game.setChessOf(0, 1, 0);
+let order = true
 
-game.setChessOf(1, 1, 1);
+let grid = new contrib.grid({rows: size, cols: size, screen: screen})
 
-game.setChessOf(0, 2, 0);
+for (let i = 0; i < size; i++) {
+    for (let j = 0; j < size; j++) {
+        box = grid.set(i, j, 4, 4, blessed.box, {
+            content: '',
+            bold: 'bold'
+        })
+    }
+}
 
-game.setChessOf(1, 1, 2);
+function setChess(i, j) {
 
-game.setChessOf(0, 3, 0);
+    if (order === true) {
+        grid.set(i, j, 4, 4, blessed.box, {
+            content: 'X',
+            bold: 'bold'
+        },)
+    } else {
+        grid.set(i, j, 4, 4, blessed.box, {
+            content: 'O',
+            bold: 'bold'
+        },)
+        order = false
+    }
 
-game.setChessOf(1, 1, 3);
+    try {
+        game.setChessOf(order, i, j)
+        order = !order
+    } catch (e) {
+        console.log(e)
+    }
+}
 
-game.setChessOf(0, 4, 0);
+screen.render()
 
-game.setChessOf(1, 1, 4);
-
-//  ...
-//
-//  It will return the index of winner
+program.on('keypress', function (ch, key) {
+    if (key.name === 'q') {
+        program.clear();
+        program.disableMouse();
+        program.showCursor();
+        program.normalBuffer();
+        process.exit(0);
+    }
+})
